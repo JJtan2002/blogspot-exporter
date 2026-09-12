@@ -141,3 +141,36 @@ def test_cleans_empty_blogger_divs_and_breaks(converter):
     assert "<div>" not in md
     assert "<br" not in md
     assert "Paragraph 1\n\nParagraph 2" in md
+
+
+def test_unwraps_table_nested_in_heading(converter):
+    raw_html = """
+    <h3>Heading Title
+    <table>
+      <tr><th>Col1</th><th>Col2</th></tr>
+      <tr><td>Val1</td><td>Val2</td></tr>
+    </table>
+    </h3>
+    <p>Follow-up paragraph</p>
+    """
+    md, issues = converter.convert(raw_html)
+    assert not issues
+    assert "### Heading Title" in md
+    assert "| Col1 | Col2 |" in md
+    assert "| Val1 | Val2 |" in md
+
+
+def test_converts_tr_caption_container(converter):
+    raw_html = """
+    <table class="tr-caption-container">
+      <tbody>
+        <tr><td><a href="https://example.com/highres.png"><img src="https://example.com/lowres.png" alt="Chart"/></a></td></tr>
+        <tr><td class="tr-caption">Figure 1: Yield Curve Analysis</td></tr>
+      </tbody>
+    </table>
+    """
+    md, issues = converter.convert(raw_html)
+    assert not issues
+    assert "[![Chart](https://example.com/lowres.png)](https://example.com/highres.png)" in md
+    assert "*Figure 1: Yield Curve Analysis*" in md
+    assert "<table" not in md

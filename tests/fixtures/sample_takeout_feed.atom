@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom'>
+  <id>tag:blogger.com,1999:blog-9876543210987654321</id>
+  <title type='text'>Test Learning Journal | Dividend Investing</title>
+
+  <!-- Published Post 1: Real financial article structure -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.post-1001</id>
+    <type>POST</type>
+    <status>LIVE</status>
+    <title>Decoding Suntec REIT's Earnings Results</title>
+    <content type='html'>&lt;h3&gt;Key Earnings Metrics&lt;/h3&gt;
+&lt;p&gt;Suntec REIT announced its latest results, showing &lt;strong&gt;resilient distribution per unit&lt;/strong&gt;.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Portfolio occupancy remains above 95%&lt;/li&gt;
+  &lt;li&gt;Gearing ratio stabilized near 42%&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Read more on &lt;a href="https://example.com/suntec"&gt;SGX announcements&lt;/a&gt;.&lt;/p&gt;</content>
+    <created>2026-03-01T04:00:00.000Z</created>
+    <published>2026-03-01T04:00:00Z</published>
+    <updated>2026-03-02T08:00:00.000Z</updated>
+    <category scheme='tag:blogger.com,1999:blog-9876543210987654321' term='suntec'/>
+    <category scheme='tag:blogger.com,1999:blog-9876543210987654321' term='dividend investing'/>
+    <category scheme='tag:blogger.com,1999:blog-9876543210987654321' term='reits'/>
+    <category/>
+    <filename>/2026/03/decoding-suntec-reits-earnings.html</filename>
+    <link/>
+  </entry>
+
+  <!-- Published Post 2: Financial table nested in H3 (Blogger WYSIWYG quirk) & Captioned table -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.post-1002</id>
+    <type>POST</type>
+    <status>LIVE</status>
+    <title>Portfolio Update: Q1 Dividends Received</title>
+    <content type='html'>&lt;p&gt;Here is the summary of dividends received in Q1:&lt;/p&gt;
+&lt;h3&gt;Dividend Cash Flow Table
+&lt;table border="1"&gt;
+  &lt;tr&gt;&lt;th&gt;Status&lt;/th&gt;&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Stock / REIT&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Received&lt;/td&gt;&lt;td&gt;16 Feb 2026&lt;/td&gt;&lt;td&gt;Kimly&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Received&lt;/td&gt;&lt;td&gt;25 Feb 2026&lt;/td&gt;&lt;td&gt;SGX&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+&lt;/h3&gt;
+&lt;table class="tr-caption-container"&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;&lt;td&gt;&lt;a href="https://blogger.googleusercontent.com/full.png"&gt;&lt;img src="https://blogger.googleusercontent.com/thumb.png" alt="Dividend Chart"/&gt;&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td class="tr-caption"&gt;Historical payout chart&lt;/td&gt;&lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;</content>
+    <created>2026-04-01T10:00:00.000Z</created>
+    <published>2026-04-01T10:00:00Z</published>
+    <category scheme='tag:blogger.com,1999:blog-9876543210987654321' term='dividend investing'/>
+    <filename>/2026/04/portfolio-update-q1-dividends.html</filename>
+    <link/>
+  </entry>
+
+  <!-- Draft Page: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.page-2001</id>
+    <type>PAGE</type>
+    <status>DRAFT</status>
+    <title>Draft Contact Page</title>
+    <content type='html'>&lt;p&gt;Contact form draft.&lt;/p&gt;</content>
+    <created>2026-01-01T00:00:00.000Z</created>
+    <published>2026-01-01T00:00:00Z</published>
+  </entry>
+
+  <!-- Live Page: Must be skipped (not a post) -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.page-2002</id>
+    <type>PAGE</type>
+    <status>LIVE</status>
+    <title>Portfolio Overview</title>
+    <content type='html'>&lt;p&gt;Static page containing portfolio overview.&lt;/p&gt;</content>
+    <created>2026-01-01T00:00:00.000Z</created>
+    <published>2026-01-01T00:00:00Z</published>
+    <filename>/p/portfolio.html</filename>
+  </entry>
+
+  <!-- Comment: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.post-3001</id>
+    <type>COMMENT</type>
+    <status>LIVE</status>
+    <title/>
+    <content type='html'>&lt;p&gt;Great analysis, thanks for sharing!&lt;/p&gt;</content>
+    <created>2026-03-02T02:00:00.000Z</created>
+    <published>2026-03-02T02:00:00Z</published>
+  </entry>
+
+  <!-- Trashed / Deleted Entry: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.post-4001</id>
+    <type>POST</type>
+    <status>TRASHED</status>
+    <title>Deleted Test Post</title>
+    <content type='html'>&lt;p&gt;This post was moved to trash.&lt;/p&gt;</content>
+    <trashed>2026-02-01T00:00:00Z</trashed>
+  </entry>
+
+  <!-- Duplicate Post: Same post ID as Post 1 -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.post-1001</id>
+    <type>POST</type>
+    <status>LIVE</status>
+    <title>Decoding Suntec REIT's Earnings Results</title>
+    <content type='html'>&lt;p&gt;Duplicate post content.&lt;/p&gt;</content>
+    <published>2026-03-01T04:00:00Z</published>
+    <filename>/2026/03/decoding-suntec-reits-earnings.html</filename>
+  </entry>
+
+  <!-- Unfamiliar Entry Type: Must be recorded in issues, not silently discarded -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-9876543210987654321.widget-5001</id>
+    <type>CUSTOM_WIDGET</type>
+    <status>LIVE</status>
+    <title>Sidebar Analytics</title>
+    <content type='html'>&lt;p&gt;Custom widget markup.&lt;/p&gt;</content>
+  </entry>
+</feed>

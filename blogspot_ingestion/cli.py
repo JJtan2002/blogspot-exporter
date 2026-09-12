@@ -9,13 +9,13 @@ from blogspot_ingestion.pipeline import IngestionPipeline
 
 def parse_args(args=None):
     parser = argparse.ArgumentParser(
-        description="Ingest Blogger/Blogspot XML exports into clean Markdown files with YAML frontmatter classified as personal_analysis.",
+        description="Ingest Blogger/Blogspot Google Takeout (feed.atom/atom.feed) or legacy XML exports into clean Markdown files with YAML frontmatter classified as personal_analysis.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
-        "xml_file",
+        "source",
         type=str,
-        help="Path to the Blogger/Blogspot XML export file",
+        help="Path to the Blogger export file (feed.atom, atom.feed, .xml) or export folder",
     )
     parser.add_argument(
         "-o",
@@ -23,6 +23,12 @@ def parse_args(args=None):
         type=str,
         default="output/posts",
         help="Directory to save generated Markdown files",
+    )
+    parser.add_argument(
+        "--base-url",
+        type=str,
+        default=None,
+        help="Canonical base URL (e.g. https://yourblog.blogspot.com). Auto-detected if settings.csv is found.",
     )
     parser.add_argument(
         "--report-json",
@@ -58,18 +64,20 @@ def parse_args(args=None):
 
 def main(args=None) -> int:
     parsed_args = parse_args(args)
-    input_path = Path(parsed_args.xml_file)
+    input_path = Path(parsed_args.source)
 
-    if not input_path.is_file():
-        print(f"Error: Input XML file not found: {input_path}", file=sys.stderr)
+    if not input_path.exists():
+        print(f"Error: Input path not found: {input_path}", file=sys.stderr)
         return 1
 
     print("==================================================")
     print("  Blogger / Blogspot Ingestion Pipeline")
     print("==================================================")
-    print(f"Input file:        {input_path}")
+    print(f"Source path:       {input_path}")
     print(f"Output directory:  {parsed_args.output_dir}")
     print(f"Classification:    {parsed_args.classification}")
+    if parsed_args.base_url:
+        print(f"Base URL:          {parsed_args.base_url}")
     print(f"Dry run:           {parsed_args.dry_run}")
     print("--------------------------------------------------")
 
@@ -80,12 +88,14 @@ def main(args=None) -> int:
             report_json_path=parsed_args.report_json,
             report_md_path=parsed_args.report_md,
             classification=parsed_args.classification,
+            base_url=parsed_args.base_url,
             dry_run=parsed_args.dry_run,
         )
         report = pipeline.run()
 
         print("\n--- Ingestion Report Summary ---")
-        print(f"Total XML Entries:           {report.total_entries}")
+        print(f"Resolved Feed File:          {report.input_file}")
+        print(f"Total Feed Entries:          {report.total_entries}")
         print(f"Published Posts Found:       {report.published_posts_found}")
         print(f"Successfully Converted:      {report.converted_count}")
         print(f"Skipped Entries:             {report.skipped_count}")
@@ -93,7 +103,7 @@ def main(args=None) -> int:
             print(f"  - {kind}: {count}")
         print(f"Duplicate Entries:           {report.duplicate_count}")
         print(f"Issues / Warnings:           {report.issue_count}")
-        print(f"Original XML Unmodified:     {'Yes' if report.input_file_unmodified else 'NO (INTEGRITY ERROR)'}")
+        print(f"Original Archive Unmodified: {'Yes' if report.input_file_unmodified else 'NO (INTEGRITY ERROR)'}")
         print(f"Time Elapsed:                {report.duration_seconds:.3f}s")
 
         if not parsed_args.dry_run:
@@ -107,7 +117,7 @@ def main(args=None) -> int:
                 print(f"  [{issue.severity.upper()}] {issue.issue_type}: {issue.message}")
 
         if not report.input_file_unmodified:
-            print("\nCRITICAL: Input XML file was modified!", file=sys.stderr)
+            print("\nCRITICAL: Input feed archive was modified!", file=sys.stderr)
             return 2
 
         print("\nIngestion completed successfully.")

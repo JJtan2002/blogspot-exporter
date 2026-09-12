@@ -1,4 +1,4 @@
-"""Core ingestion pipeline orchestrator for Blogger / Blogspot XML exports."""
+"""Core ingestion pipeline orchestrator for Blogger / Blogspot exports."""
 
 import os
 import re
@@ -10,7 +10,7 @@ import unicodedata
 from blogspot_ingestion.converter import ContentConverter
 from blogspot_ingestion.frontmatter import create_post_markdown_content
 from blogspot_ingestion.models import ConvertedPostRecord, IngestionReport
-from blogspot_ingestion.parser import BloggerXmlParser, compute_file_sha256
+from blogspot_ingestion.parser import BloggerXmlParser, compute_file_sha256, resolve_feed_path
 
 
 def slugify(value: str, max_length: int = 60) -> str:
@@ -27,7 +27,6 @@ def extract_date_prefix(date_str: str) -> str:
     """Extract YYYY-MM-DD from an ISO date string."""
     if not date_str:
         return "undated"
-    # Blogger dates are ISO formatted: e.g. 2023-05-14T10:30:00.000+08:00
     cleaned = date_str.strip()
     if len(cleaned) >= 10 and cleaned[:4].isdigit() and cleaned[4] == "-" and cleaned[7] == "-":
         return cleaned[:10]
@@ -35,7 +34,7 @@ def extract_date_prefix(date_str: str) -> str:
 
 
 class IngestionPipeline:
-    """Orchestrates parsing Blogger XML, converting content, generating frontmatter, and writing output."""
+    """Orchestrates parsing Blogger feeds, converting content, generating frontmatter, and writing output."""
 
     def __init__(
         self,
@@ -44,10 +43,11 @@ class IngestionPipeline:
         report_json_path: Optional[str | Path] = None,
         report_md_path: Optional[str | Path] = None,
         classification: str = "personal_analysis",
+        base_url: Optional[str] = None,
         dry_run: bool = False,
         overwrite: bool = True,
     ):
-        self.input_file = Path(input_file).resolve()
+        self.input_path = Path(input_file).resolve()
         self.output_dir = Path(output_dir).resolve()
         self.report_json_path = (
             Path(report_json_path).resolve()
@@ -60,6 +60,7 @@ class IngestionPipeline:
             else self.output_dir.parent / "ingestion_report.md"
         )
         self.classification = classification
+        self.base_url = base_url
         self.dry_run = dry_run
         self.overwrite = overwrite
 
@@ -69,14 +70,14 @@ class IngestionPipeline:
         """Execute the ingestion pipeline."""
         start_time = time.time()
 
-        if not self.input_file.is_file():
-            raise FileNotFoundError(f"Blogger XML input file does not exist: {self.input_file}")
+        # Resolve feed file path (handles directory or direct feed.atom/atom.feed/xml file)
+        feed_file = resolve_feed_path(self.input_path)
 
         # Compute initial hash to guarantee input file is unmodified
-        initial_hash = compute_file_sha256(self.input_file)
+        initial_hash = compute_file_sha256(feed_file)
 
         report = IngestionReport(
-            input_file=str(self.input_file),
+            input_file=str(feed_file),
             output_dir=str(self.output_dir),
             input_file_hash_sha256=initial_hash,
         )
@@ -86,7 +87,7 @@ class IngestionPipeline:
             self.report_json_path.parent.mkdir(parents=True, exist_ok=True)
             self.report_md_path.parent.mkdir(parents=True, exist_ok=True)
 
-        parser = BloggerXmlParser(self.input_file)
+        parser = BloggerXmlParser(feed_file, base_url=self.base_url)
 
         # Deduplication indices
         seen_post_ids: Dict[str, str] = {}  # post_id -> destination_filename
@@ -96,7 +97,7 @@ class IngestionPipeline:
         for post, parser_issues in parser.parse_entries():
             report.total_entries += 1
 
-            # Record any issues from parsing
+            # Record any parser-level issues
             for issue in parser_issues:
                 report.add_issue(
                     issue_type=issue.issue_type,
@@ -106,7 +107,17 @@ class IngestionPipeline:
                     severity=issue.severity,
                 )
 
-            # 1. Filter non-post entries (comments, pages, templates, settings)
+            # 1. Filter trashed / deleted entries
+            if post.is_trashed:
+                report.add_skipped(
+                    post_id=post.id,
+                    title=post.title,
+                    kind="trashed",
+                    reason="Skipped trashed/deleted entry",
+                )
+                continue
+
+            # 2. Filter non-post entries (comments, pages, templates, settings, etc.)
             if post.kind != "post":
                 report.add_skipped(
                     post_id=post.id,
@@ -116,7 +127,7 @@ class IngestionPipeline:
                 )
                 continue
 
-            # 2. Filter drafts
+            # 3. Filter drafts
             if post.is_draft:
                 report.add_skipped(
                     post_id=post.id,
@@ -129,7 +140,7 @@ class IngestionPipeline:
             # This is a published post
             report.published_posts_found += 1
 
-            # 3. Deduplication check
+            # 4. Deduplication check
             is_dup = False
             dup_reason = ""
             orig_file = None
@@ -158,10 +169,9 @@ class IngestionPipeline:
                     post_title=post.title,
                     severity="warning",
                 )
-                # Skip duplicate post from conversion
                 continue
 
-            # 4. Generate unique, collision-resistant filename
+            # 5. Generate unique, collision-resistant filename
             date_prefix = extract_date_prefix(post.published)
             title_slug = slugify(post.title)
             base_filename = f"{date_prefix}-{title_slug}"
@@ -179,7 +189,7 @@ class IngestionPipeline:
 
             file_path = self.output_dir / filename
 
-            # 5. Convert content HTML to Markdown with selective HTML preservation
+            # 6. Convert content HTML to Markdown with selective HTML preservation
             markdown_body, conv_issues = self.converter.convert(
                 raw_html=post.content_html,
                 post_id=post.id,
@@ -194,14 +204,14 @@ class IngestionPipeline:
                     severity=issue.severity,
                 )
 
-            # 6. Generate Markdown file with YAML frontmatter classified as personal_analysis
+            # 7. Generate Markdown file with YAML frontmatter classified as personal_analysis
             full_markdown = create_post_markdown_content(
                 post=post,
                 markdown_body=markdown_body,
                 classification=self.classification,
             )
 
-            # 7. Write Markdown file
+            # 8. Write Markdown file
             if not self.dry_run:
                 try:
                     file_path.write_text(full_markdown, encoding="utf-8")
@@ -229,12 +239,12 @@ class IngestionPipeline:
             report.add_converted(record)
 
         # Verify input file was never modified
-        final_hash = compute_file_sha256(self.input_file)
+        final_hash = compute_file_sha256(feed_file)
         report.input_file_unmodified = initial_hash == final_hash
         if not report.input_file_unmodified:
             report.add_issue(
                 issue_type="file_mutation_error",
-                message="CRITICAL: Input XML file hash changed during execution! File was unexpectedly modified.",
+                message="CRITICAL: Input feed file hash changed during execution! File was unexpectedly modified.",
                 severity="error",
             )
 

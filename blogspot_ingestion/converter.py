@@ -106,7 +106,6 @@ class BloggerMarkdownConverter(MarkdownConverter):
 
     def convert_pre(self, el: Tag, text: str, *args, **kwargs) -> str:
         """Convert preformatted text / code blocks to fenced Markdown code blocks with language detection."""
-        # Detect language hint from class or child code tag
         classes = el.get("class", [])
         if isinstance(classes, str):
             classes = classes.split()
@@ -121,7 +120,6 @@ class BloggerMarkdownConverter(MarkdownConverter):
         raw_classes = " ".join(classes)
         lang = ""
 
-        # Check for syntax highlighter brush format: brush: python or brush:py
         brush_match = re.search(r"brush:\s*(\w+)", raw_classes, re.IGNORECASE)
         if brush_match:
             lang = brush_match.group(1).lower()
@@ -140,7 +138,6 @@ class BloggerMarkdownConverter(MarkdownConverter):
                     lang = cls_lower
                     break
 
-        # Extract code content preserving indentation
         code_content = el.get_text()
         code_content = code_content.strip("\r\n")
 
@@ -170,19 +167,59 @@ class ContentConverter:
             for comment in soup.find_all(string=lambda text: isinstance(text, Comment)):
                 comment.extract()
 
-            # Clean Blogger specific empty spacer tags like <div><br></div> or <p><br></p>
+            # 1. Blogger WYSIWYG fix: lift block elements (table, div, ul, ol, p, blockquote, pre) out of headings
+            for h in soup.find_all(["h1", "h2", "h3", "h4", "h5", "h6"]):
+                nested_blocks = h.find_all(["table", "ul", "ol", "p", "blockquote", "pre"])
+                for block in nested_blocks:
+                    # Move block element to be a sibling immediately after the heading
+                    h.insert_after(block)
+
+            # 2. Blogger caption tables: unwrap <table class="tr-caption-container"> into image + caption paragraph
+            for caption_tbl in soup.find_all("table", class_=lambda c: c and "tr-caption-container" in c):
+                img = caption_tbl.find("img")
+                if img:
+                    a_tag = caption_tbl.find("a")
+                    caption_td = caption_tbl.find("td", class_=lambda c: c and "tr-caption" in c)
+                    caption_text = caption_td.get_text(strip=True) if caption_td else ""
+
+                    wrapper = soup.new_tag("div")
+                    if a_tag and a_tag.get("href"):
+                        link_el = soup.new_tag("a", href=a_tag["href"])
+                        img_el = soup.new_tag("img", src=img.get("src", ""), alt=img.get("alt", caption_text))
+                        link_el.append(img_el)
+                        wrapper.append(link_el)
+                    else:
+                        img_el = soup.new_tag("img", src=img.get("src", ""), alt=img.get("alt", caption_text))
+                        wrapper.append(img_el)
+
+                    if caption_text:
+                        p_cap = soup.new_tag("p")
+                        em_cap = soup.new_tag("em")
+                        em_cap.string = caption_text
+                        p_cap.append(em_cap)
+                        wrapper.append(p_cap)
+
+                    caption_tbl.replace_with(wrapper)
+
+            # 3. Clean Blogger empty spacer tags like <div><br></div> or <p><br></p>
             for div in soup.find_all(["div", "p"]):
                 if not div.find_all(True) and not div.get_text(strip=True):
                     div.decompose()
                 elif len(div.contents) == 1 and getattr(div.contents[0], "name", None) == "br":
                     div.decompose()
 
-            # Normalize Blogger image wrappers:
-            # <div class="separator" ...><a href="..."><img ... /></a></div>
+            # 4. Normalize Blogger image wrappers: <div class="separator" ...><a href="..."><img ... /></a></div>
             for sep_div in soup.find_all("div", class_=lambda c: c and "separator" in c):
                 img = sep_div.find("img")
                 if img and len(sep_div.find_all(True)) <= 2:
                     sep_div.unwrap()
+
+            # 5. Clean up empty Angular / pasted AI component tags (e.g. <source-footnote>)
+            for custom_tag in soup.find_all(["source-footnote", "sources-carousel-inline", "response-element", "model-response"]):
+                if not custom_tag.get_text(strip=True) and not custom_tag.find("img"):
+                    custom_tag.decompose()
+                else:
+                    custom_tag.unwrap()
 
             preprocessed_html = str(soup)
 

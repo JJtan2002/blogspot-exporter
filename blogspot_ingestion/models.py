@@ -19,6 +19,7 @@ class BlogPost:
     author_name: Optional[str] = None
     author_email: Optional[str] = None
     is_draft: bool = False
+    is_trashed: bool = False
     kind: str = "post"
     entry_index: int = 0
 
@@ -63,7 +64,7 @@ class DuplicateEntry:
 
 @dataclass
 class SkippedEntry:
-    """Records an entry that was intentionally skipped (draft, comment, page, template, etc.)."""
+    """Records an entry that was intentionally skipped (draft, comment, page, template, trashed, etc.)."""
     post_id: str
     title: str
     kind: str
@@ -205,13 +206,13 @@ class IngestionReport:
             f"**Input File:** `{self.input_file}`",
             f"**Output Directory:** `{self.output_dir}`",
             f"**Execution Duration:** {self.duration_seconds:.2f}s",
-            f"**Original XML Unmodified:** {'✅ Yes' if self.input_file_unmodified else '❌ No'}",
+            f"**Original Archive Unmodified:** {'✅ Yes' if self.input_file_unmodified else '❌ No'}",
             "",
             "## Summary Metrics",
             "",
             "| Metric | Count |",
             "| :--- | :--- |",
-            f"| **Total XML Entries** | {self.total_entries} |",
+            f"| **Total Feed Entries** | {self.total_entries} |",
             f"| **Published Posts Found** | {self.published_posts_found} |",
             f"| **Successfully Converted** | {self.converted_count} |",
             f"| **Skipped Entries** | {self.skipped_count} |",

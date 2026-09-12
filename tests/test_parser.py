@@ -1,12 +1,18 @@
-"""Unit tests for the Blogger XML parser."""
+"""Unit tests for the Blogger XML and Google Takeout Atom parser."""
 
 from pathlib import Path
 import pytest
 
-from blogspot_ingestion.parser import BloggerXmlParser, compute_file_sha256
+from blogspot_ingestion.parser import (
+    BloggerXmlParser,
+    compute_file_sha256,
+    detect_base_url_from_settings,
+    resolve_feed_path,
+)
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 SAMPLE_XML = FIXTURES_DIR / "sample_blogger_export.xml"
+SAMPLE_TAKEOUT = FIXTURES_DIR / "sample_takeout_feed.atom"
 
 
 def test_compute_file_sha256():
@@ -20,13 +26,23 @@ def test_parser_file_not_found():
         BloggerXmlParser("non_existent_file.xml")
 
 
-def test_parser_extracts_all_entries():
+def test_resolve_feed_path_directory():
+    # Resolving the fixtures directory should locate sample_takeout_feed.atom or sample_blogger_export.xml
+    resolved = resolve_feed_path(FIXTURES_DIR)
+    assert resolved.is_file()
+    assert resolved.suffix in (".atom", ".xml")
+
+
+def test_detect_base_url_from_settings():
+    base_url = detect_base_url_from_settings(SAMPLE_TAKEOUT)
+    assert base_url == "https://testjournal.blogspot.com"
+
+
+def test_legacy_xml_parser_extracts_all_entries():
     parser = BloggerXmlParser(SAMPLE_XML)
     entries = list(parser.parse_entries())
 
-    # 4 published posts + 1 duplicate post + 1 draft + 1 comment + 1 page + 1 template = 9 entries
     assert len(entries) == 9
-
     kinds = [post.kind for post, _ in entries]
     assert kinds.count("post") == 6
     assert kinds.count("comment") == 1
@@ -34,36 +50,48 @@ def test_parser_extracts_all_entries():
     assert kinds.count("template") == 1
 
 
-def test_parser_detects_draft():
-    parser = BloggerXmlParser(SAMPLE_XML)
+def test_takeout_atom_parser():
+    parser = BloggerXmlParser(SAMPLE_TAKEOUT)
     entries = list(parser.parse_entries())
 
-    drafts = [post for post, _ in entries if post.is_draft]
-    assert len(drafts) == 1
-    assert drafts[0].title == "Unfinished Thoughts on Quantum Computing"
-    assert drafts[0].id == "tag:blogger.com,1999:blog-1234567890123456789.post-9999"
+    # 8 total entries in fixture
+    assert len(entries) == 8
 
+    posts = [p for p, _ in entries if p.kind == "post"]
+    assert len(posts) == 4  # 2 live, 1 trashed, 1 duplicate
 
-def test_parser_extracts_labels():
-    parser = BloggerXmlParser(SAMPLE_XML)
-    entries = list(parser.parse_entries())
+    # Check Post 1 metadata and URL construction
+    post1 = posts[0]
+    assert post1.title == "Decoding Suntec REIT's Earnings Results"
+    assert post1.published == "2026-03-01T04:00:00Z"
+    assert post1.url == "https://testjournal.blogspot.com/2026/03/decoding-suntec-reits-earnings.html"
+    assert "suntec" in post1.labels
+    assert "dividend investing" in post1.labels
+    assert "reits" in post1.labels
+    assert post1.is_draft is False
+    assert post1.is_trashed is False
 
-    first_post = entries[0][0]
-    assert first_post.title == "The Evolution of Autonomous Agents"
-    assert "Technology" in first_post.labels
-    assert "Artificial Intelligence" in first_post.labels
+    # Check Draft Page
+    draft_pages = [p for p, _ in entries if p.kind == "page" and p.is_draft]
+    assert len(draft_pages) == 1
+    assert draft_pages[0].title == "Draft Contact Page"
 
-    second_post = entries[1][0]
-    assert "Deep Dive" in second_post.labels
-    assert "Cloud Computing" in second_post.labels
+    # Check Live Page
+    live_pages = [p for p, _ in entries if p.kind == "page" and not p.is_draft]
+    assert len(live_pages) == 1
+    assert live_pages[0].title == "Portfolio Overview"
 
+    # Check Comment
+    comments = [p for p, _ in entries if p.kind == "comment"]
+    assert len(comments) == 1
 
-def test_parser_extracts_canonical_url_and_dates():
-    parser = BloggerXmlParser(SAMPLE_XML)
-    entries = list(parser.parse_entries())
+    # Check Trashed Entry
+    trashed = [p for p, _ in entries if p.is_trashed]
+    assert len(trashed) == 1
+    assert trashed[0].title == "Deleted Test Post"
 
-    first_post = entries[0][0]
-    assert first_post.url == "https://tech-analysis.blogspot.com/2025/06/the-evolution-of-autonomous-agents.html"
-    assert first_post.published == "2025-06-15T14:30:00.000+08:00"
-    assert first_post.updated == "2025-06-16T09:15:00.000+08:00"
-    assert first_post.author_name == "Analyst Alex"
+    # Check unfamiliar entry type issue recording
+    unfamiliar = [(p, issues) for p, issues in entries if p.kind == "custom_widget"]
+    assert len(unfamiliar) == 1
+    p_unfam, p_issues = unfamiliar[0]
+    assert any(i.issue_type == "unfamiliar_entry_type" for i in p_issues)
