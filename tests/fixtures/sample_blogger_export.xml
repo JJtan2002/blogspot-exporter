@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns='http://www.w3.org/2005/Atom' 
+      xmlns:openSearch='http://a9.com/-/spec/opensearchrss/1.0/' 
+      xmlns:georss='http://www.georss.org/georss' 
+      xmlns:gd='http://schemas.google.com/g/2005' 
+      xmlns:thr='http://purl.org/syndication/thread/1.0' 
+      xmlns:app='http://purl.org/atom/app#'>
+  <id>tag:blogger.com,1999:blog-1234567890123456789</id>
+  <updated>2026-09-12T10:00:00.000+08:00</updated>
+  <title type='text'>My Personal Tech Analysis Blog</title>
+  <subtitle type='html'>In-depth essays and industry observations</subtitle>
+  <link rel='http://schemas.google.com/g/2005#feed' type='application/atom+xml' href='https://tech-analysis.blogspot.com/feeds/posts/default'/>
+  <link rel='self' type='application/atom+xml' href='https://www.blogger.com/feeds/1234567890123456789/archive'/>
+  <link rel='alternate' type='text/html' href='https://tech-analysis.blogspot.com/'/>
+  <author>
+    <name>Analyst Alex</name>
+    <email>alex@example.com</email>
+  </author>
+
+  <!-- Published Post 1: Standard Article -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-1001</id>
+    <published>2025-06-15T14:30:00.000+08:00</published>
+    <updated>2025-06-16T09:15:00.000+08:00</updated>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#post'/>
+    <category scheme='http://www.blogger.com/atom/ns#' term='Technology'/>
+    <category scheme='http://www.blogger.com/atom/ns#' term='Artificial Intelligence'/>
+    <title type='text'>The Evolution of Autonomous Agents</title>
+    <content type='html'>&lt;h2&gt;Introduction to Agentic Architectures&lt;/h2&gt;
+&lt;p&gt;Autonomous agents have progressed dramatically over the past two years. We are witnessing a shift from static prompt completion to &lt;strong&gt;dynamic multi-step reasoning&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Key breakthroughs include:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Recursive decomposition of complex user requests&lt;/li&gt;
+  &lt;li&gt;Autonomous tool execution and self-correction loops&lt;/li&gt;
+  &lt;li&gt;Persistent memory across conversation epochs&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;&lt;p&gt;The true power of AI is not in single-token prediction, but in the orchestrated execution of intent.&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;For further details, visit &lt;a href="https://example.com/whitepaper"&gt;the research paper&lt;/a&gt;.&lt;/p&gt;</content>
+    <link rel='replies' type='application/atom+xml' href='https://tech-analysis.blogspot.com/feeds/1001/comments/default' title='Post Comments'/>
+    <link rel='edit' type='application/atom+xml' href='https://www.blogger.com/feeds/1234567890123456789/posts/default/1001'/>
+    <link rel='self' type='application/atom+xml' href='https://www.blogger.com/feeds/1234567890123456789/posts/default/1001'/>
+    <link rel='alternate' type='text/html' href='https://tech-analysis.blogspot.com/2025/06/the-evolution-of-autonomous-agents.html' title='The Evolution of Autonomous Agents'/>
+    <author>
+      <name>Analyst Alex</name>
+    </author>
+  </entry>
+
+  <!-- Published Post 2: Video Embed, Code, Complex Table & Simple Table -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-1002</id>
+    <published>2025-07-20T18:00:00.000+08:00</published>
+    <updated>2025-07-20T18:00:00.000+08:00</updated>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#post'/>
+    <category scheme='http://www.blogger.com/atom/ns#' term='Deep Dive'/>
+    <category scheme='http://www.blogger.com/atom/ns#' term='Cloud Computing'/>
+    <title type='text'>Hardware Benchmarks: GPU vs TPU Performance</title>
+    <content type='html'>&lt;h3&gt;Watch the Benchmark Walkthrough&lt;/h3&gt;
+&lt;p&gt;Here is the live benchmark recording:&lt;/p&gt;
+&lt;iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Benchmark Video" frameborder="0" allowfullscreen="allowfullscreen"&gt;&lt;/iframe&gt;
+&lt;h3&gt;Standard Results Table&lt;/h3&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Device&lt;/th&gt;
+      &lt;th&gt;Throughput (tokens/s)&lt;/th&gt;
+      &lt;th&gt;Latency (ms)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;NVIDIA H100&lt;/td&gt;
+      &lt;td&gt;3,450&lt;/td&gt;
+      &lt;td&gt;12.4&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Google TPU v5e&lt;/td&gt;
+      &lt;td&gt;3,120&lt;/td&gt;
+      &lt;td&gt;14.1&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h3&gt;Complex Partitioning Table (With Colspan)&lt;/h3&gt;
+&lt;p&gt;Below is a partitioned cluster breakdown:&lt;/p&gt;
+&lt;table border="1" cellpadding="5"&gt;
+  &lt;tr&gt;
+    &lt;th colspan="2"&gt;Cluster Tier Alpha&lt;/th&gt;
+    &lt;th&gt;Cost per Hour&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Node A&lt;/td&gt;
+    &lt;td&gt;Node B&lt;/td&gt;
+    &lt;td&gt;$18.50&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+&lt;h3&gt;Benchmark Script&lt;/h3&gt;
+&lt;pre class="brush: python"&gt;&lt;code&gt;def calculate_throughput(tokens, elapsed_seconds):
+    return tokens / elapsed_seconds
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Chemical stability factor: H&lt;sub&gt;2&lt;/sub&gt;O and efficiency factor: O(N&lt;sup&gt;2&lt;/sup&gt;).&lt;/p&gt;</content>
+    <link rel='alternate' type='text/html' href='https://tech-analysis.blogspot.com/2025/07/hardware-benchmarks-gpu-vs-tpu.html' title='Hardware Benchmarks: GPU vs TPU Performance'/>
+    <author>
+      <name>Analyst Alex</name>
+    </author>
+  </entry>
+
+  <!-- Published Post 3: Image with Blogger Separator wrapper and spacer divs -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-1003</id>
+    <published>2025-08-01T09:00:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#post'/>
+    <category scheme='http://www.blogger.com/atom/ns#' term='Architecture'/>
+    <title type='text'>System Topology: Next-Gen Ingestion Pipeline</title>
+    <content type='html'>&lt;p&gt;Review the architecture diagram below:&lt;/p&gt;
+&lt;div class="separator" style="clear: both; text-align: center;"&gt;
+  &lt;a href="https://1.bp.blogspot.com/-XYZ/s1600/architecture_highres.png" style="margin-left: 1em; margin-right: 1em;"&gt;
+    &lt;img border="0" data-original-height="900" data-original-width="1600" src="https://1.bp.blogspot.com/-XYZ/s640/architecture_highres.png" alt="Architecture Diagram" /&gt;
+  &lt;/a&gt;
+&lt;/div&gt;
+&lt;div&gt;&lt;br /&gt;&lt;/div&gt;
+&lt;p&gt;All nodes communicate via asynchronous queues.&lt;/p&gt;</content>
+    <link rel='alternate' type='text/html' href='https://tech-analysis.blogspot.com/2025/08/system-topology-next-gen-ingestion.html' title='System Topology: Next-Gen Ingestion Pipeline'/>
+  </entry>
+
+  <!-- Published Post 4: Special Characters & Colon in Title -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-1004</id>
+    <published>2025-09-01T12:00:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#post'/>
+    <category scheme='http://www.blogger.com/atom/ns#' term='Market Strategy'/>
+    <title type='text'>Analysis: 2026 Q2 Tech Trends &amp; Future Outlook!</title>
+    <content type='html'>&lt;p&gt;Examining upcoming quarterly shifts across enterprise SaaS and infrastructure spending.&lt;/p&gt;</content>
+    <link rel='alternate' type='text/html' href='https://tech-analysis.blogspot.com/2025/09/analysis-2026-q2-tech-trends.html' title='Analysis: 2026 Q2 Tech Trends &amp; Future Outlook!'/>
+  </entry>
+
+  <!-- Duplicate of Published Post 1 (Same ID & URL) -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-1001</id>
+    <published>2025-06-15T14:30:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#post'/>
+    <title type='text'>The Evolution of Autonomous Agents</title>
+    <content type='html'>&lt;p&gt;Duplicate content that should be caught and skipped by deduplication.&lt;/p&gt;</content>
+    <link rel='alternate' type='text/html' href='https://tech-analysis.blogspot.com/2025/06/the-evolution-of-autonomous-agents.html'/>
+  </entry>
+
+  <!-- Draft Post: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-9999</id>
+    <published>2025-09-10T11:00:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#post'/>
+    <title type='text'>Unfinished Thoughts on Quantum Computing</title>
+    <content type='html'>&lt;p&gt;Work in progress draft, not yet ready for public consumption.&lt;/p&gt;</content>
+    <app:control>
+      <app:draft>yes</app:draft>
+    </app:control>
+  </entry>
+
+  <!-- Comment Entry: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.post-8888</id>
+    <published>2025-06-16T10:00:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#comment'/>
+    <title type='text'>Great analysis on agents!</title>
+    <content type='html'>&lt;p&gt;Really enjoyed reading this perspective.&lt;/p&gt;</content>
+    <thr:in-reply-to ref='tag:blogger.com,1999:blog-1234567890123456789.post-1001'/>
+  </entry>
+
+  <!-- Static Page Entry: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.page-7777</id>
+    <published>2024-01-01T00:00:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#page'/>
+    <title type='text'>About This Blog</title>
+    <content type='html'>&lt;p&gt;Static about page for the blog.&lt;/p&gt;</content>
+  </entry>
+
+  <!-- Template / Settings Entry: Must be skipped -->
+  <entry>
+    <id>tag:blogger.com,1999:blog-1234567890123456789.layout-6666</id>
+    <published>2024-01-01T00:00:00.000+08:00</published>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/blogger/2008/kind#template'/>
+    <title type='text'>Blog Theme Layout Template</title>
+    <content type='html'>&lt;p&gt;Template xml settings.&lt;/p&gt;</content>
+  </entry>
+</feed>

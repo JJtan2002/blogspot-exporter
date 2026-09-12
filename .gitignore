@@ -1,0 +1,68 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python Virtual Environments
+.venv/
+env/
+venv/
+ENV/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Pipeline Generated Outputs (Ingested Markdown posts & reports)
+output/
+ingestion_report.json
+ingestion_report.md
+
+# Logs & Temporary Files
+*.log
+*.tmp
+*.temp
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+
+# IDE & Editor Specific Files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Operating System Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Private Assistant Instructions & Local Rules
+AGENTS.md
+CLAUDE.md
+.agents/
+
+# Raw Blogspot & Google Takeout XML / Atom Exports
+*.xml
+*.atom
+*.feed
+*.zip
+*.tar.gz
+*.tgz
+feed.atom
+atom.feed
+Blogger/
+Takeout/
+takeout-*/
+takeout_*/
+
+# Whitelist synthetic unit test fixtures only
+!tests/fixtures/*.xml
+!tests/fixtures/*.atom
+!tests/fixtures/*.csv
